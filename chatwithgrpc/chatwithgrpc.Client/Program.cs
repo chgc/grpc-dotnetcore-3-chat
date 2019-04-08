@@ -32,6 +32,8 @@ namespace chatwithgrpc
                     }
                 });
 
+                await chat.RequestStream.WriteAsync(new Message { User = userName, Text = $"{userName} has joined the room" });
+
                 string line;
                 while ((line = Console.ReadLine()) != null)
                 {
