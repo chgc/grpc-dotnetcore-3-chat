@@ -1,8 +1,8 @@
 syntax = "proto3";
 
-package Greet;
+package Chat;
 
-service Chat {
+service ChatRoom {
   rpc join (stream Message) returns (stream Message) {}    
 }
 

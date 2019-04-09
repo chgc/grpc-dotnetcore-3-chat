@@ -1,4 +1,4 @@
-﻿using Greet;
+﻿using Chat;
 using Grpc.Core;
 using System;
 using System.Collections.Generic;
@@ -12,29 +12,16 @@ namespace chatwithgrpc.Server
     {
 
         private ConcurrentDictionary<string, IServerStreamWriter<Message>> users = new ConcurrentDictionary<string, IServerStreamWriter<Message>>();
-        public void join(string name, IServerStreamWriter<Message> response)
-        {
-            users.TryAdd(name, response);
-        }
 
-        public void Remove(string name)
-        {
-            users.TryRemove(name, out var s);
-        }
+        public void Join(string name, IServerStreamWriter<Message> response) => users.TryAdd(name, response);
 
-        public ConcurrentDictionary<string, IServerStreamWriter<Message>> getUserList()
-        {
-            return users;
-        }
+        public void Remove(string name)  => users.TryRemove(name, out var s);
 
-        public async Task BroadcastMessageAsync(Message message)
-        {
-            await BroadcastMessages(message);
-        }
+        public async Task BroadcastMessageAsync(Message message) => await BroadcastMessages(message);
 
         private async Task BroadcastMessages(Message message)
         {
-            foreach (var user in users.Where(x=> x.Key != message.User))
+            foreach (var user in users.Where(x => x.Key != message.User))
             {
                 var item = await SendMessageToSubscriber(user, message);
                 if (item != null)

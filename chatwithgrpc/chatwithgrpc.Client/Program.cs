@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Greet;
+using Chat;
 using Grpc.Core;
 
 namespace chatwithgrpc
@@ -19,8 +19,8 @@ namespace chatwithgrpc
             var port = args.Length > 0 ? args[0] : "50051";
 
             var channel = new Channel("localhost:" + port, ChannelCredentials.Insecure);
-            var client = new Chat.ChatClient(channel);
-            
+            var client = new ChatRoom.ChatRoomClient(channel);
+
             using (var chat = client.join())
             {
                 _ = Task.Run(async () =>

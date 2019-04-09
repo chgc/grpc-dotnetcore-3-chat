@@ -1,15 +1,11 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
-using Google.Protobuf.WellKnownTypes;
-using Greet;
+using Chat;
 using Grpc.Core;
 
 namespace chatwithgrpc
 {
-    public class ChatService : Chat.ChatBase
+    public class ChatService: ChatRoom.ChatRoomBase
     {
         private readonly Server.ChatRoom _chatroomService;
 
@@ -19,15 +15,12 @@ namespace chatwithgrpc
         }
 
         public override async Task join(IAsyncStreamReader<Message> requestStream, IServerStreamWriter<Message> responseStream, ServerCallContext context)
-        {            
-            if(!await requestStream.MoveNext())
-            {
-                return;
-            }
+        {
+            if (!await requestStream.MoveNext()) return;
 
             do
-            {                
-                _chatroomService.join(requestStream.Current.User, responseStream);
+            {
+                _chatroomService.Join(requestStream.Current.User, responseStream);
                 await _chatroomService.BroadcastMessageAsync(requestStream.Current);
             } while (await requestStream.MoveNext());
 
